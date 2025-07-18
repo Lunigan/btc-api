@@ -28,28 +28,23 @@ namespace Btc.Api.Services
         {
             var today = DateTime.UtcNow.Date;
 
-            // 🔎 Check if ČNB data for today already exists
-            var cnbRate = _unitOfWork.CnbRates.GetByDate(today);
-            if (cnbRate is null)
+            var cnbRate = await _cnbService.FetchCnbRateAsync(today);
+
+            if (cnbRate != null)
             {
-                cnbRate = await _cnbService.FetchCnbRateAsync(today);
-                if (cnbRate != null)
-                {
-                    await _unitOfWork.CnbRates.AddAsync(cnbRate);
-                    await _unitOfWork.SaveAsync();
-                }
+                await _unitOfWork.CnbRates.AddAsync(cnbRate);
+                await _unitOfWork.SaveAsync();
             }
 
-            // 🪙 Fetch CoinDesk rate
+            // Fetch CoinDesk rate
             var btcRate = await _bitcoinService.FetchCoinDeskRateAsync();
             if (btcRate != null)
             {
                 var record = new BitcoinRateRecord
                 {
-                    Timestamp = DateTime.UtcNow,
+                    Timestamp = btcRate.Timestamp,
                     BtcEur = btcRate.BtcEur,
                     EurCzk = cnbRate.Rate,
-                    DailyChangePercent = btcRate.DailyChangePercent
                 };
 
                 await _unitOfWork.BitcoinRates.AddAsync(record);
