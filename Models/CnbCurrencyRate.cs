@@ -3,6 +3,7 @@
     public class CnbCurrencyRate
     {
         public int Id { get; set; }
+        public DateTime Timestamp { get; set; }
         public string CurrencyCode { get; set; } = string.Empty;
         public decimal Rate { get; set; }
         public int Amount { get; set; } = 1;
