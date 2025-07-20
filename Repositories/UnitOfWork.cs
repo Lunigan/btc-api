@@ -8,17 +8,17 @@ namespace Btc.Api.Repositories
         private readonly CurrencyDbContext _context;
 
         public IBitcoinRateRecordRepository BitcoinRates { get; }
-        public ICnbCurrencyRateRepository CnbRates { get; }
+        public ICurrencyRateRepository CurrencyRates { get; }
 
         public UnitOfWork(
             CurrencyDbContext context,
             IBitcoinRateRecordRepository bitcoinRates,
-            ICnbCurrencyRateRepository cnbRates
+            ICurrencyRateRepository currencyRates
         )
         {
             _context = context;
             BitcoinRates = bitcoinRates;
-            CnbRates = cnbRates;
+            CurrencyRates = currencyRates;
         }
 
         public async Task<int> SaveAsync() => await _context.SaveChangesAsync();

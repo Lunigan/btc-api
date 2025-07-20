@@ -18,5 +18,13 @@ namespace Btc.Api.Repositories
         public BitcoinRateRecord? Get(int id) => _currencyDbContext.BitcoinRates.FirstOrDefault(x => x.Id == id);
 
         public List<BitcoinRateRecord> Get() => [.. _currencyDbContext.BitcoinRates];
+
+        public List<BitcoinRateRecord> GetLatest() => [.. _currencyDbContext.BitcoinRates
+            .Where(x => x.Timestamp > DateTime.UtcNow.AddDays(-1))
+        ];
+
+        public List<BitcoinRateRecord> GetRecordsFromLastDays(int i) => [.. _currencyDbContext.BitcoinRates
+            .Where(x => x.Timestamp > DateTime.UtcNow.AddDays(i < 0 ? i : -i))
+        ];
     }
 }

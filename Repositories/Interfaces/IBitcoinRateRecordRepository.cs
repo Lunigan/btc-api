@@ -7,5 +7,7 @@ namespace Btc.Api.Repositories.Interfaces
         Task AddAsync(BitcoinRateRecord record);
         List<BitcoinRateRecord> Get();
         BitcoinRateRecord? Get(int id);
+        List<BitcoinRateRecord> GetLatest();
+        List<BitcoinRateRecord> GetRecordsFromLastDays(int i);
     }
 }

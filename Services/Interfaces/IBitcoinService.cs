@@ -4,6 +4,6 @@ namespace Btc.Api.Services.Interfaces
 {
     public interface IBitcoinService
     {
-        Task<BitcoinRateRecord?> FetchCoinDeskRateAsync();
+        Task FetchCoinDeskRateAsync();
     }
 }

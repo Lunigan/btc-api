@@ -1,12 +1,39 @@
 using Btc.Api.Contexts;
+using Btc.Api.Mappers;
+using Btc.Api.Repositories;
+using Btc.Api.Repositories.Interfaces;
+using Btc.Api.Services;
+using Btc.Api.Services.BackgroundServices;
+using Btc.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Add DB
 builder.Services.AddDbContext<CurrencyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CurrencyDb")));
+
+// repos
+builder.Services.AddScoped<IBitcoinRateRecordRepository, BitcoinRateRecordRepository>();
+builder.Services.AddScoped<ICurrencyRateRepository, CurrencyRateRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// mappers
+builder.Services.AddAutoMapper(typeof(BitcoinRateRecordProfile));
+builder.Services.AddAutoMapper(typeof(CurrencyRateProfile));
+
+// background services
+builder.Services.AddHostedService<CoinDeskPollingService>();
+builder.Services.AddHostedService<CnbPollingService>();
+
+// services
+builder.Services.AddScoped<ICurrencyService, CurrencyService>();
+builder.Services.AddScoped<IBitcoinService, BitcoinService>();
+
+builder.Services.AddHttpClient();
+builder.Services.AddTransient<IHttpService, HttpService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
