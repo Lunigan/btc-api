@@ -15,6 +15,40 @@ This backend provides RESTful endpoints for storing, retrieving, and managing Bi
 - `POST /api/bitcoin/rates/latest` — Get latest BTC-CZK records
 - `POST /api/currency/rates/latest` — get latest currency rates
 - Other endpoints for saving/retrieving/removing BTC snapshots (not shown)
+- Project contains OpenAPI/Swagger
+
+### Sample request - get latest currency rates
+```
+GET https://localhost:44391/api/currency/rates/latest
+```
+
+Response:
+```json
+[
+  {
+    "sourceCurrencyCode": "AUD",
+    "targetCurrencyCode": "CZK",
+    "rate": 13.797,
+    "amount": 1,
+    "validFor": "2025-07-18T00:00:00"
+  },
+  {
+    "sourceCurrencyCode": "EUR",
+    "targetCurrencyCode": "CZK",
+    "rate": 24.625,
+    "amount": 1,
+    "validFor": "2025-07-18T00:00:00"
+  },
+  {
+    "sourceCurrencyCode": "JPY",
+    "targetCurrencyCode": "CZK",
+    "rate": 14.235,
+    "amount": 100,
+    "validFor": "2025-07-18T00:00:00"
+  },
+  ...
+]
+```
 
 ## 🗃️ Logging
 
