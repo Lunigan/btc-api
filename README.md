@@ -9,6 +9,7 @@ This backend provides RESTful endpoints for storing, retrieving, and managing Bi
 - SQL Server / SQLite / any EF-compatible DB
 - Code-first DB with migrations
 - Serilog for structured logging
+- AutoMapper
 
 ## 🚀 Endpoints
 
