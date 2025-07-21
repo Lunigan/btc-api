@@ -6,7 +6,7 @@ This backend provides RESTful endpoints for storing, retrieving, and managing Bi
 
 - ASP.NET Core Web API
 - Entity Framework Core
-- SQL Server / SQLite / any EF-compatible DB
+- SQL Server / SQLite / any EF-compatible DB. For development uses local SQL Express.
 - Code-first DB with migrations
 - Serilog for structured logging
 - AutoMapper
