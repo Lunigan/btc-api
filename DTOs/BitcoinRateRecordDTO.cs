@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace Btc.Api.DTOs.Responses
+namespace Btc.Api.DTOs
 {
-    public class BitcoinRateRecordResponse
+    public class BitcoinRateRecordDTO
     {
         [JsonProperty("instrument")]
         public string Instrument { get; set; } = "BTC-EUR";

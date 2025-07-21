@@ -5,11 +5,19 @@ using Btc.Api.Repositories.Interfaces;
 using Btc.Api.Services;
 using Btc.Api.Services.BackgroundServices;
 using Btc.Api.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("logs/btc-log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 // Add DB
 builder.Services.AddDbContext<CurrencyDbContext>(options =>
@@ -17,11 +25,13 @@ builder.Services.AddDbContext<CurrencyDbContext>(options =>
 
 // repos
 builder.Services.AddScoped<IBitcoinRateRecordRepository, BitcoinRateRecordRepository>();
+builder.Services.AddScoped<IBitcoinRateRecordSnapshotRepository, BitcoinRateRecordSnapshotRepository>();
 builder.Services.AddScoped<ICurrencyRateRepository, CurrencyRateRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // mappers
 builder.Services.AddAutoMapper(typeof(BitcoinRateRecordProfile));
+builder.Services.AddAutoMapper(typeof(BitcoinRateRecordSnapshotProfile));
 builder.Services.AddAutoMapper(typeof(CurrencyRateProfile));
 
 // background services
@@ -48,6 +58,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

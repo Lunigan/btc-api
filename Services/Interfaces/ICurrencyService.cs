@@ -1,12 +1,11 @@
-﻿using Btc.Api.DTOs.Responses;
-using Btc.Api.Models;
+﻿using Btc.Api.DTOs;
 
 namespace Btc.Api.Services.Interfaces
 {
     public interface ICurrencyService
     {
-        Task<List<CurrencyRateResponse?>?> GetLatestCurrencyRates();
-        CurrencyRateResponse? GetLatestCurrencyRate(string currencyCode);
+        Task<List<CurrencyRateDTO>> GetLatestCurrencyRates();
+        CurrencyRateDTO? GetLatestCurrencyRate(string currencyCode);
         Task<bool> TryFetchCurrentRates();
     }
 }

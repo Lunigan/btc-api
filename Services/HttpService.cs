@@ -7,15 +7,21 @@ namespace Btc.Api.Services
     public class HttpService : IHttpService
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<HttpService> _logger;
 
-        public HttpService(IHttpClientFactory httpClientFactory)
+        public HttpService(
+            IHttpClientFactory httpClientFactory, 
+            ILogger<HttpService> logger
+        )
         {
             _httpClientFactory = httpClientFactory;
+            _logger = logger;
         }
 
         public async Task<T?> GetAsync<T>(string uri) where T : class
         {
             if (string.IsNullOrWhiteSpace(uri)) throw new ArgumentNullException(nameof(uri));
+            _logger.LogTrace("Creating GET request.");
 
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync(uri);
@@ -31,6 +37,7 @@ namespace Btc.Api.Services
         public async Task<T?> GetAsync<T>(string uri, Dictionary<string, string> queryParams) where T : class
         {
             if (string.IsNullOrWhiteSpace(uri)) throw new ArgumentNullException(nameof(uri));
+            _logger.LogTrace("Creating GET request with query params.");
 
             if (queryParams == null)
             {
@@ -47,7 +54,7 @@ namespace Btc.Api.Services
         {
             if (queryParams == null)
             {
-                //log warning
+                _logger.LogWarning("Given query params dictionary is null.");
                 return string.Empty;
             }
 

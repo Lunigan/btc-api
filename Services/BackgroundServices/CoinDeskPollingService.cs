@@ -4,10 +4,15 @@ namespace Btc.Api.Services.BackgroundServices
 {
     public class CoinDeskPollingService : BackgroundService
     {
+        private readonly ILogger<CoinDeskPollingService> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public CoinDeskPollingService(IServiceProvider serviceProvider)
+        public CoinDeskPollingService(
+            ILogger<CoinDeskPollingService> logger,
+            IServiceProvider serviceProvider
+        )
         {
+            _logger = logger;
             _serviceProvider = serviceProvider;
         }
 
@@ -18,7 +23,7 @@ namespace Btc.Api.Services.BackgroundServices
         /// <returns></returns>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Console.WriteLine("CoinDeskPollingService is running...");
+            _logger.LogInformation("CoinDeskPollingService is running...");
 
             var timer = new PeriodicTimer(TimeSpan.FromMinutes(10));
 
@@ -32,7 +37,7 @@ namespace Btc.Api.Services.BackgroundServices
                 }
                 catch (Exception ex)
                 {
-                    //_logger.LogError(ex, "Error occurred while polling API.");
+                    _logger.LogError(ex, "Error occurred while polling CoinDesk API.");
                 }
             }
         }

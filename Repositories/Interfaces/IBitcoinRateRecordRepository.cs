@@ -8,6 +8,7 @@ namespace Btc.Api.Repositories.Interfaces
         List<BitcoinRateRecord> Get();
         BitcoinRateRecord? Get(int id);
         List<BitcoinRateRecord> GetLatest();
+        BitcoinRateRecord? GetLatestRecord();
         List<BitcoinRateRecord> GetRecordsFromLastDays(int i);
     }
 }

@@ -6,10 +6,10 @@ namespace Btc.Api.Repositories.Interfaces
     {
         Task AddAsync(CurrencyRate currencyRate);
         List<CurrencyRate> GetAll();
-        List<CurrencyRate> GetAll(string curencyCode);
+        List<CurrencyRate> GetAll(string currencyCode);
         CurrencyRate? Get(int id);
-        CurrencyRate? GetByDate(DateTime date, string curencyCode);
+        CurrencyRate? GetByDate(DateTime date, string currencyCode);
         Task<List<CurrencyRate?>> GetLatest();
-        CurrencyRate? GetLatest(string curencyCode);
+        CurrencyRate? GetLatest(string currencyCode);
     }
 }

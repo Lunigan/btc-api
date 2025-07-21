@@ -3,6 +3,7 @@
     public interface IUnitOfWork : IDisposable
     {
         IBitcoinRateRecordRepository BitcoinRates { get; }
+        IBitcoinRateRecordSnapshotRepository BitcoinRateSnapshots { get; }
         ICurrencyRateRepository CurrencyRates { get; }
         Task<int> SaveAsync();
     }

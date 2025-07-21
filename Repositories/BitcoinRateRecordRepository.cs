@@ -23,6 +23,10 @@ namespace Btc.Api.Repositories
             .Where(x => x.Timestamp > DateTime.UtcNow.AddDays(-1))
         ];
 
+        public BitcoinRateRecord? GetLatestRecord() => _currencyDbContext.BitcoinRates
+            .OrderByDescending(x => x.Timestamp)
+            .FirstOrDefault();
+
         public List<BitcoinRateRecord> GetRecordsFromLastDays(int i) => [.. _currencyDbContext.BitcoinRates
             .Where(x => x.Timestamp > DateTime.UtcNow.AddDays(i < 0 ? i : -i))
         ];

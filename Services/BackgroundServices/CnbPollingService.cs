@@ -4,10 +4,15 @@ namespace Btc.Api.Services.BackgroundServices
 {
     public class CnbPollingService : BackgroundService
     {
+        private readonly ILogger<CnbPollingService> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public CnbPollingService(IServiceProvider serviceProvider)
+        public CnbPollingService(
+            ILogger<CnbPollingService> logger,
+            IServiceProvider serviceProvider
+        )
         {
+            _logger = logger;
             _serviceProvider = serviceProvider;
         }
 
@@ -19,7 +24,7 @@ namespace Btc.Api.Services.BackgroundServices
         /// <returns></returns>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Console.WriteLine("CnbPollingService is running...");
+           _logger.LogInformation("CnbPollingService is running...");
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -39,7 +44,7 @@ namespace Btc.Api.Services.BackgroundServices
 
                 if (!success)
                 {
-                    //_logger.LogWarning("Initial fetch failed. Starting fallback retries...");
+                    _logger.LogWarning("Initial fetch failed. Starting fallback retries...");
                     int retries = 3; // Retry for ~45 minutes
                     for (int i = 0; i < retries && !stoppingToken.IsCancellationRequested; i++)
                     {
@@ -48,13 +53,13 @@ namespace Btc.Api.Services.BackgroundServices
 
                         if (success)
                         {
-                            //_logger.LogInformation($"Fallback fetch succeeded on attempt {i + 1}.");
+                            _logger.LogInformation($"Fallback fetch succeeded on attempt {i + 1}.");
                             break;
                         }
                     }
 
-                    //if (!success)
-                        //_logger.LogError("Fallback retries failed. Will try again tomorrow.");
+                    if (!success)
+                        _logger.LogError("Fallback retries failed. Will try again tomorrow.");
                 }
             }
         }

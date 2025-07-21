@@ -6,6 +6,7 @@ namespace Btc.Api.Contexts
     public class CurrencyDbContext : DbContext
     {
         public DbSet<BitcoinRateRecord> BitcoinRates { get; set; }
+        public DbSet<BitcoinRateRecordSnapshot> BitcoinRateRecordSnapshots { get; set; }
         public DbSet<CurrencyRate> CurrencyRates { get; set; }
 
         public CurrencyDbContext(DbContextOptions<CurrencyDbContext> options)
@@ -20,6 +21,14 @@ namespace Btc.Api.Contexts
                 .HasPrecision(18, 6);
 
             modelBuilder.Entity<BitcoinRateRecord>()
+                .Property(x => x.EurCzk)
+                .HasPrecision(18, 6);
+
+            modelBuilder.Entity<BitcoinRateRecordSnapshot>()
+                .Property(x => x.BtcEur)
+                .HasPrecision(18, 6);
+
+            modelBuilder.Entity<BitcoinRateRecordSnapshot>()
                 .Property(x => x.EurCzk)
                 .HasPrecision(18, 6);
 

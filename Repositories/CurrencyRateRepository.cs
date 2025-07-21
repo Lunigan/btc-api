@@ -17,49 +17,39 @@ namespace Btc.Api.Repositories
         public async Task AddAsync(CurrencyRate currencyRate) => await _currencyDbContext.CurrencyRates.AddAsync(currencyRate);
 
         public List<CurrencyRate> GetAll() => [.. _currencyDbContext.CurrencyRates];
-        public List<CurrencyRate> GetAll(string curencyCode) => [.. _currencyDbContext.CurrencyRates
-            .Where(x => x.SourceCurrencyCode.Equals(curencyCode))
+        public List<CurrencyRate> GetAll(string currencyCode) => [.. _currencyDbContext.CurrencyRates
+            .Where(x => x.SourceCurrencyCode.Equals(currencyCode))
         ];
 
         public CurrencyRate? Get(int id) => _currencyDbContext.CurrencyRates.FirstOrDefault(x => x.Id == id);
 
-        public CurrencyRate? GetByDate(DateTime date, string curencyCode) => _currencyDbContext.CurrencyRates
-            .FirstOrDefault(x => x.ValidFor.Date == date.Date && x.SourceCurrencyCode.Equals(curencyCode));
+        public CurrencyRate? GetByDate(DateTime date, string currencyCode) => _currencyDbContext.CurrencyRates
+            .FirstOrDefault(x => x.ValidFor.Date == date.Date && x.SourceCurrencyCode.Equals(currencyCode));
 
-        public async Task<List<CurrencyRate?>> GetLatest()
+        public async Task<List<CurrencyRate>> GetLatest()
         {
             var today = DateTime.Today;
-            var yesterday = today.AddDays(-1);
 
-            // Try today first
-            var latestRates = await _currencyDbContext.CurrencyRates
+            var todayRates = await _currencyDbContext.CurrencyRates
                 .Where(r => r.ValidFor.Date == today)
-                .GroupBy(r => r.SourceCurrencyCode)
-                .Select(g => g
-                    .OrderByDescending(r => r.ValidFor)
-                    .FirstOrDefault()
-                )
                 .ToListAsync();
 
-            // If none, try yesterday
-            if (!latestRates.Any())
-            {
-                latestRates = await _currencyDbContext.CurrencyRates
-                    .Where(r => r.ValidFor.Date == yesterday)
-                    .GroupBy(r => r.SourceCurrencyCode)
-                    .Select(g => g
-                        .OrderByDescending(r => r.ValidFor)
-                        .FirstOrDefault()
-                    )
-                    .ToListAsync();
-            }
+            if (todayRates.Count > 0) return todayRates;
+
+            // Get the latest available date in the database
+            var latestDate = await _currencyDbContext.CurrencyRates
+                .MaxAsync(r => r.ValidFor.Date);
+
+            var latestRates = await _currencyDbContext.CurrencyRates
+                .Where(r => r.ValidFor.Date == latestDate)
+                .ToListAsync();
 
             return latestRates;
         }
 
-        public CurrencyRate? GetLatest(string curencyCode) => _currencyDbContext.CurrencyRates
-            .OrderByDescending(x => x.Id)
-            .Where(x => x.SourceCurrencyCode.Equals(curencyCode))
+        public CurrencyRate? GetLatest(string currencyCode) => _currencyDbContext.CurrencyRates
+            .Where(x => x.SourceCurrencyCode.Equals(currencyCode))
+            .OrderByDescending(x => x.ValidFor)
             .FirstOrDefault();
     }
 }
